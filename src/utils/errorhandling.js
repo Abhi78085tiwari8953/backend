@@ -12,7 +12,7 @@ class errorhandling extends Error {
           this.success = false;
           this.errors = errors
           if(stack){
-            this.stack = statck
+            this.stack = stack
           }else{
             Error.captureStackTrace(this,this.constructor )
           }
