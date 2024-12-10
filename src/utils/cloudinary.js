@@ -7,9 +7,10 @@ cloudinary.config({
     cloud_name: 'process.env.CLOUDINARY_CLOUD_NAME', 
     api_key: 'process.env.CLOUDINARY_API_KEY', 
     api_secret: 'process.env.CLODINARY_API_SECREAT' // Click 'View API Keys' above to copy your API secret
+    
 });
 
-const uploadONCloudinary = async (localFilePath)=>{
+const uploadOnCloudinary = async (localFilePath)=>{
     try {
         if(!localFilePath) return null;
         //uploadFileinCloudinary
@@ -24,4 +25,5 @@ const uploadONCloudinary = async (localFilePath)=>{
     }
 }
 
-export{uploadONCloudinary}
+
+export{uploadOnCloudinary}
