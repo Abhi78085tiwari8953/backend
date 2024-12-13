@@ -115,9 +115,9 @@ const coverImage = coverImageLocalPath ? await uploadOnCloudinary(coverImageLoca
     const{email,username,password} = req.body;
     if(!username|| !email){
         
-        if(!username&&!email){
+        
             throw new errorhandling(400," username or password is required")
-        }
+      
        
     }
     const user = await User.findOne({
@@ -186,6 +186,45 @@ const logOut = asyncHandler(async(req,res)=>{
     .json(new ApiResponse(200,{},"User logOut"))
 })
 
+const refreshAcessToken = asyncHandler(async(req,res)=>{
+   try {
+     const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken
+     if(!incomingRefreshToken){
+         throw new errorhandling(401,"unauthorized request")
+     }
+     const decodedToken = jwt.verify(incomingRefreshToken,process.env.REFRESH_TOKEN_SECRET);
+ 
+     const user = await User.findById(decodedToken?._id);
+ 
+     if(!user){
+         throw new errorhandling(401,"invalid regresh token")
+     }
+ 
+     if(incomingRefreshToken!== user?.refreshToken){
+         throw new errorhandling(401,"refresh token is  not valid");
+     }
+     const options = {
+         httpOnly : true,
+         secure:true
+     }
+ 
+     const {accessToken,newrefreshToken} = await generateAccessAndRefereshToken(user._id)
+ 
+     return res.ststus(200)
+     .cookie("accessToken", accessToken,options)
+     .cookie("refreshToken", newrefreshToken,options)
+     .json(
+         new ApiResponse(
+             200,
+             {accessToken,refreshToken:newrefreshToken},
+             "Access token refreshed"
+         )
+     )
+   } catch (error) {
+    throw new errorhandling(401,error?.message||"invalid token")
+   }
+})
 
-export { registerUser,loginUser,logOut };
+
+export { registerUser,loginUser,logOut,refreshAcessToken };
 
