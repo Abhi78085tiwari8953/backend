@@ -188,18 +188,19 @@ const logOut = asyncHandler(async(req,res)=>{
 
 const refreshAcessToken = asyncHandler(async(req,res)=>{
    try {
+    // yeh user bhej rhain hain
      const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken
      if(!incomingRefreshToken){
          throw new errorhandling(401,"unauthorized request")
      }
      const decodedToken = jwt.verify(incomingRefreshToken,process.env.REFRESH_TOKEN_SECRET);
- 
+ // jo database ke andar hain
      const user = await User.findById(decodedToken?._id);
  
      if(!user){
          throw new errorhandling(401,"invalid regresh token")
      }
- 
+ //compare kar rahe hain (user jo likha hain or database me padha )
      if(incomingRefreshToken!== user?.refreshToken){
          throw new errorhandling(401,"refresh token is  not valid");
      }
